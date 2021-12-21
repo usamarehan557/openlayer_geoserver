@@ -19,7 +19,6 @@ function getlayers() {
   xhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       myFunction(this)
-      console.log('layers called')
     }
   }
   xhttp.open('GET', 'note.xml', true)
@@ -49,14 +48,33 @@ function myFunction(xml) {
   // xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
 }
 
+// ...................................................default image layer
+var default_layer = 'nyc:pakistanPAK_adm0_3857';
+
+
 // ...................................................Switching image layers
 function switcher(layer) {
-  console.log('switched')  
+  console.log("layer recieved = ", layer);
+  let search_result = default_layer.search(layer);
+  console.log("search result = ", search_result);
 
-  var params = untiled.getSource().getParams()
-  params.LAYERS = layer
-  untiled.getSource().updateParams(params)
+  if (search_result == -1) {
+
+    changed_layer = default_layer.concat(`,`, layer);
+    default_layer = changed_layer;
+
+  } else if (search_result > -1) {
+    main_layer = 'nyc:pakistanPAK_adm0_3857';
+    default_layer = main_layer;
+
+  }
+  console.log("default layer = ", default_layer);
+  var params = geoserved.getSource().getParams()
+  params.LAYERS = default_layer
+  geoserved.getSource().updateParams(params)
+  console.log(params);
 }
+
 
 function tester() {
   let text = "Mr. nyc:Blue,nyc:Red has a blue house"
@@ -72,14 +90,11 @@ var mousePositionControl = new ol.control.MousePosition({
   undefinedHTML: '&nbsp;',
 })
 
-// ...................................................default image layer
-  var default_layer = 'nyc:pakistanPAK_adm0_3857';
-
 
 // ...................................................showing image layer
 
 // function layerAdder() {
-  var untiled = new ol.layer.Image({
+  var geoserved = new ol.layer.Image({
     source: new ol.source.ImageWMS({
       ratio: 1,
       url: 'http://localhost:8081/geoserver/nyc/wms',
@@ -95,40 +110,15 @@ var mousePositionControl = new ol.control.MousePosition({
 // }
 
 
-// ...................................................satellite image basemap
-var worldImagery = new ol.layer.Tile({
-  visible: false,
-  source: new ol.source.XYZ({
-    url:
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 19,
-  }),
-})
 
-// ...................................................satellite image Topography basemap
-var worldTopo = new ol.layer.Tile({
-  visible: false,
-  source: new ol.source.XYZ({
-    url:
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-    maxZoom: 19,
-  }),
-})
+function callDefaultData() {
+  getlayers();
+  create_MapObject();
+  custom_AddMaps();
+  custom_AddLayers();
+}
 
-// ...................................................stadia dark basemap
-var Darkmap = new ol.layer.Tile({
-  visible: false,
-  source: new ol.source.XYZ({
-    url:
-      'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-    maxZoom: 19,
-  }),
-})
-// ...................................................Open layers basemap
-var basemap = new ol.layer.Tile({
-  source: new ol.source.OSM(),
-})
-
+function create_MapObject() {
 // ...................................................projection
 var projection = new ol.proj.Projection({
   code: 'EPSG:3857',
@@ -143,13 +133,69 @@ var map = new ol.Map({
     })
     .extend([mousePositionControl]),
   target: 'map',
-  layers: [worldImagery, basemap, worldTopo, untiled],
+  // layers: [worldImagery, basemap, worldTopo, geoserved],
+  layers: [],
   view: new ol.View({
     projection: projection,
   }),
 })
+}
 
-var dark_flag = 1;
+function custom_AddLayers() {
+
+}
+
+function custom_AddMaps() {
+
+
+// ...................................................satellite image basemap
+var worldImagery = new ol.layer.Tile({
+  visible: true,
+  source: new ol.source.XYZ({
+    url:
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 19,
+  }),
+})
+map.addLayer(worldImagery);
+
+// ...................................................satellite image Topography basemap
+var worldTopo = new ol.layer.Tile({
+  visible: false,
+  source: new ol.source.XYZ({
+    url:
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    maxZoom: 19,
+  }),
+})
+map.addLayer(worldTopo);
+// ...................................................Open layers basemap
+var basemap = new ol.layer.Tile({
+  source: new ol.source.OSM(),
+})
+map.addLayer(basemap);
+}
+// // ...................................................projection
+// var projection = new ol.proj.Projection({
+//   code: 'EPSG:3857',
+//   units: 'm',
+//   global: true,
+// })
+// // ...................................................map
+// var map = new ol.Map({
+//   controls: ol.control
+//     .defaults({
+//       attribution: false,
+//     })
+//     .extend([mousePositionControl]),
+//   target: 'map',
+//   // layers: [worldImagery, basemap, worldTopo, geoserved],
+//   layers: [],
+//   view: new ol.View({
+//     projection: projection,
+//   }),
+// })
+
 
 
 // ...................................................tile layer opacity
@@ -159,7 +205,7 @@ var output = document.getElementById("demo");
 output.innerHTML = slider.value;
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function() {
-  untiled.setOpacity(this.value)
+  geoserver.setOpacity(this.value)
 }
 
 
@@ -198,6 +244,9 @@ function topomap() {
   worldImagery.set('visible', false)
   worldTopo.set('visible', true)
 }
+
+var dark_flag = 1;
+
 function darkmap() {
   //change map color
   if (dark_flag == 1) {

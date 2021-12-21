@@ -12,6 +12,9 @@
         <layers category="web" cover="paperback">
         <title lang="en">nyc:PAK_adm3_3857</title>
         </layers>
+        <layers category="web">
+        <title lang="en">nyc:India_1</title>
+        </layers>
     </layerstore>
 
 </store>
