@@ -1,0 +1,17 @@
+<store>
+    <layerstore>
+        <layers category="cooking">
+        <title lang="en">nyc:pakistanPAK_adm0_3857</title>
+        </layers>
+        <layers category="children">
+        <title lang="en">nyc:PAK_adm1_3857</title>
+        </layers>
+        <layers category="web">
+        <title lang="en">nyc:PAK_adm2_3857</title>
+        </layers>
+        <layers category="web" cover="paperback">
+        <title lang="en">nyc:PAK_adm3_3857</title>
+        </layers>
+    </layerstore>
+
+</store>
