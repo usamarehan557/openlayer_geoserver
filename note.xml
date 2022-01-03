@@ -1,20 +1,31 @@
 <store>
+
+
+    <basemaps>
+            <base>
+                <url lang="en" name="World Imagery">'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}/'</url>
+            </base>
+            <base>
+                <url lang="en" name="Topography">'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}/'</url>
+            </base>
+    </basemaps>
+
     <layerstore>
-        <layers category="cooking">
+        <layers category="tile">
         <title lang="en">nyc:pakistanPAK_adm0_3857</title>
         </layers>
-        <layers category="children">
+        <layers category="tile">
         <title lang="en">nyc:PAK_adm1_3857</title>
         </layers>
-        <layers category="web">
+        <layers category="tile">
         <title lang="en">nyc:PAK_adm2_3857</title>
         </layers>
-        <layers category="web" cover="paperback">
+        <layers category="tile" cover="paperback">
         <title lang="en">nyc:PAK_adm3_3857</title>
         </layers>
-        <layers category="web">
+        <!-- <layers category="tile">
         <title lang="en">nyc:India_1</title>
-        </layers>
+        </layers> -->
     </layerstore>
 
 </store>
